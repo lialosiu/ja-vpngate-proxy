@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  vpngate:
+    restart: unless-stopped
+    build: ./
+    image: lialosiu/vpngate:1.0.0
+    container_name: "vpngate"
+    ports:
+      - 127.0.0.1:10888:10888
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - "/dev/net/tun:/dev/net/tun"

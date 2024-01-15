@@ -1,17 +1,17 @@
-FROM alpine:3.14
+FROM debian:11
 
-RUN apk add --no-cache \
-    bash \
-    privoxy \
+RUN apt update && apt install -y \
     openvpn \
+    v2ray \
     curl \
-    coreutils \
-    linux-tools \
-    util-linux && \
-    rename .new '' /etc/privoxy/*new
+    procps \
+    && apt-get clean autoclean \
+    && apt-get autoremove --yes \ 
+    && rm -rf /var/lib/apt/lists/*
 
 COPY start.sh /bin/
+COPY config.json /etc/v2ray/config.json
 
-EXPOSE 8118
+EXPOSE 10888
 
 CMD [ "start.sh" ]

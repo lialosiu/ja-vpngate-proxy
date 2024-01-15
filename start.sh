@@ -8,21 +8,21 @@ function global_ip {
 
 # vpn connect func
 function connect {
-  while :; do 
+  while :; do
     echo start
-    while read line; do 
+    while read line; do
       line=$(echo $line | cut -d ',' -f 15)
       line=$(echo $line | tr -d '\r')
-      openvpn <(echo "$line" | base64 -d) ;
-    done < <(curl -s $VPNGATE_URL | grep ,Japan,JP, | grep -v public-vpn- | sort -R )
+      openvpn <(echo "$line" | base64 -d)
+    done < <(curl -s $VPNGATE_URL | grep ,Japan,JP, | grep -v public-vpn- | sort -R)
     echo end
   done
 }
 
 BEFORE_IP="$(global_ip)"
 
-# start proxy
-privoxy <(grep -v listen-address /etc/privoxy/config ; echo listen-address  0.0.0.0:8118) &
+# start v2ray
+v2ray -confdir /etc/v2ray/ &
 
 # connect vpn
 connect &
@@ -37,7 +37,7 @@ while :; do
     pkill openvpn
   elif [ "$BEFORE_IP" = "$AFTER_IP" ]; then
     pkill openvpn
-  else 
+  else
     sleep 55
   fi
 done
